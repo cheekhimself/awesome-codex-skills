@@ -134,10 +134,15 @@ class TestEaseOutBounce:
         _boundary_ok(ease_out_bounce)
 
     def test_all_outputs_in_range(self):
+        # Bounce easing overshoots slightly by design (the bouncing effect).
+        # Allow a small tolerance beyond [0, 1] to account for this.
+        BOUNCE_TOLERANCE = 0.05
         for i in range(101):
             t = i / 100
             result = ease_out_bounce(t)
-            assert -0.05 <= result <= 1.05, f"out-of-range at t={t}: {result}"
+            assert -BOUNCE_TOLERANCE <= result <= 1 + BOUNCE_TOLERANCE, (
+                f"out-of-range at t={t}: {result}"
+            )
 
 
 class TestEaseInBounce:

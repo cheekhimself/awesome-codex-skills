@@ -20,16 +20,11 @@ def _valid_frontmatter(**kwargs):
     """Build minimal valid frontmatter with optional overrides."""
     data = {"name": "my-skill", "description": "A test skill"}
     data.update(kwargs)
-    lines = ["---"]
-    for k, v in data.items():
-        if isinstance(v, str):
-            lines.append(f"{k}: {v}")
-        else:
-            lines.append(f"{k}: {v!r}")
-    lines.append("---")
-    lines.append("")
-    lines.append("# My Skill")
-    return "\n".join(lines)
+    # Serialise the full dict at once so yaml.dump handles quoting/escaping
+    # correctly for all value types (strings, lists, dicts, numbers).
+    import yaml as _yaml
+    body = _yaml.dump(data, default_flow_style=False).rstrip("\n")
+    return f"---\n{body}\n---\n\n# My Skill"
 
 
 # ---------------------------------------------------------------------------
